@@ -1,0 +1,33 @@
+/* 기본 설정 */
+body {
+  background-color: #f9fafb;
+  color: #1f2937;
+  min-height: 100vh;
+}
+
+nav {
+  background-color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.nav-container {
+  max-width: 64rem;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem; /* 간격 추가 */
+}
+
+.nav-links a {
+  color: #2563eb;
+  text-decoration: none;
+  gap: 3rem; /* 간격 추가 */
+}
+
+.nav-links {
+  display: flex; /* flex 컨테이너로 설정 */
+  gap: 1rem; /* 링크 간 간격 설정 */
+}
