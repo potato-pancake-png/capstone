@@ -24,7 +24,7 @@ router.post("/", checkSession, async (req, res) => {
     // evalProfile 호출 (나이 계산)
     const { evalBirthYear } = await evalProfile(profile_url, birth_year);
 
-    // 프로필 데이터 업데이트 (DB에 이미지 바이너리 데이터 저장)
+    // 프로필 데이터 업데이트 (DB에 profile_url, 계산된 생일 저장)
     const results = await addProfile(username, profile_url, evalBirthYear);
 
     if (results.affectedRows === 0) {
