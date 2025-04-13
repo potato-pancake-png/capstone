@@ -1,8 +1,8 @@
 const express = require("express");
-const { searchPostById } = require("../service/searchPost");
-const { filterPostsByKeyword } = require("../service/filterPost");
-const { editPost } = require("../service/editPost");
-const { deletePostById } = require("../service/deletePost");
+const { searchPostById } = require("../module/searchPost");
+const { filterPostsByKeyword } = require("../module/filterPost");
+const { editPost } = require("../module/editPost");
+const { deletePostById } = require("../module/deletePost");
 const checkSession = require("../middleware/checkSession");
 const connectToDatabase = require("../config/database");
 

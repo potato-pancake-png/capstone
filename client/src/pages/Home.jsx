@@ -57,7 +57,7 @@ function CreatePost() {
     }
 
     try {
-      const response = await axios.post("/api/create", {
+      const response = await axios.post("/api/posts/create", {
         username: user,
         title,
         content,

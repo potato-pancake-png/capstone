@@ -18,7 +18,7 @@ async function addProfile(username, profileUrl, birthYear) {
 
     return results; // 성공 시 결과 반환
   } catch (error) {
-    console.error("addProfileWithImage 중 오류 발생:", error.message);
+    console.error("addProfile 중 오류 발생:", error.message);
     throw error; // 에러를 호출한 곳으로 전달
   }
 }

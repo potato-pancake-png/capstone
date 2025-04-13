@@ -1,8 +1,8 @@
 const express = require("express");
 const checkSession = require("../middleware/checkSession");
-const { evalProfile } = require("../service/evalProfile");
-const { addProfile } = require("../service/addProfile");
-const { fetchProfileImage } = require("../service/fetchProfileImage");
+const { evalProfile } = require("../module/evalProfile");
+const { addProfile } = require("../module/addProfile");
+const { fetchProfileImage } = require("../module/fetchProfileImage");
 
 const router = express.Router();
 
@@ -22,21 +22,15 @@ router.post("/", checkSession, async (req, res) => {
     const username = req.session.user.username;
 
     // evalProfile 호출 (나이 계산)
-    const { evalBirthYear } = await evalProfile(profile_url, birth_year);
+    const { evalBirthYear } = await evalProfile(birth_year);
 
     // 프로필 데이터 업데이트 (DB에 profile_url, 계산된 생일 저장)
     const results = await addProfile(username, profile_url, evalBirthYear);
 
-    if (results.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ message: "해당 사용자를 찾을 수 없습니다." });
-    }
-
     res.status(200).json({
       message: "프로필이 성공적으로 업데이트되었습니다.",
       profile: {
-        username,
+        profile_url,
         birth_year,
       },
     });
