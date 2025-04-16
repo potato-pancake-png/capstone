@@ -81,3 +81,8 @@ body {
 .profile-button:hover {
   background-color: #553c9a;
 }
+.profile-preview-image {
+  width: 200px; /* 원하는 너비 */
+  height: auto; /* 비율에 맞춰 높이 조정 */
+  border-radius: 8px; /* 모서리 둥글게 */
+}

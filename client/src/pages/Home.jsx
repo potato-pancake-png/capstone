@@ -38,7 +38,11 @@ function CreatePost() {
       ); // Axios로 GET 요청
       setPosts(response.data.posts); // 검색 결과로 게시글 목록 설정
     } catch (err) {
-      setError(err.message); // 에러 상태 설정
+      if (err.response && err.response.status === 404) {
+        setError("게시글이 없습니다"); // 404 에러 처리
+      } else {
+        setError(err.message); // 그 외 에러 처리
+      }
     } finally {
       setLoading(false); // 로딩 상태 비활성화
     }
@@ -63,16 +67,15 @@ function CreatePost() {
         content,
       }); // Axios로 POST 요청
 
-      if (response.status === 403) {
-        alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
-        navigate("/login"); // 로그인 페이지로 리다이렉트
-        return;
-      }
-
       setPosts((prevPosts) => [...prevPosts, response.data]); // 새 게시글 추가
       alert("게시글이 성공적으로 작성되었습니다.");
       e.target.reset(); // 입력 필드 초기화
     } catch (error) {
+      if (error.response.status === 403) {
+        alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+        navigate("/login"); // 로그인 페이지로 리다이렉트
+        return;
+      }
       console.error("게시글 작성 중 오류 발생:", error);
       alert("게시글 작성 중 오류가 발생했습니다.");
     }

@@ -8,7 +8,7 @@ const connectToDatabase = require("../config/database");
 
 const router = express.Router();
 
-// 게시글 조회 API
+// 게시글 전체 조회 API
 router.post("/", async (req, res) => {
   try {
     const pool = await connectToDatabase();
@@ -24,7 +24,8 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "서버 오류가 발생했습니다." });
   }
 });
-// 게시글 생성 API
+//
+//  게시글 생성 API
 router.post("/create", checkSession, async (req, res) => {
   const { username, title, content } = req.body;
 
@@ -54,11 +55,7 @@ router.post("/create", checkSession, async (req, res) => {
 
 /* [1] Broken Access Control 시나리오 구현 */
 // 게시글 열람 API
-router.get("/:id", async (req, res) => {
-  if (!req.session || !req.session.user) {
-    return res.status(403).json({ message: "권한이 없습니다. 로그인하세요." });
-  }
-
+router.get("/:id", checkSession, async (req, res) => {
   const { id } = req.params;
 
   try {

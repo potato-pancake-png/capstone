@@ -19,14 +19,18 @@ function Profile() {
 
     try {
       setLoadingPreview(true);
-      const response = await axios.post("/api/profile/preview", {
-        url: profileUrl,
-      }); // Axios로 POST 요청
+
+      const response = await axios.post(
+        "/api/profile/preview",
+        { url: profileUrl }, // 바디
+        { responseType: "blob" } // 설정
+      );
+
       const blob = new Blob([response.data], {
         type: response.headers["content-type"],
-      }); // Blob 생성
-      const objectUrl = URL.createObjectURL(blob); // Blob을 Object URL로 변환
-      setPreviewImage(objectUrl); // 미리보기 이미지 URL 설정
+      });
+      const objectUrl = URL.createObjectURL(blob);
+      setPreviewImage(objectUrl);
     } catch (error) {
       console.error("미리보기 요청 중 오류 발생:", error);
       alert("미리보기 요청 중 오류가 발생했습니다.");
