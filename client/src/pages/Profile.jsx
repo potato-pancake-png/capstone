@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 import Navbar from "../components/Nav";
 import axios from "axios"; // Axios 추가
+import { AuthContext } from "../AuthContext";
 
 function Profile() {
+  const { user } = useContext(AuthContext);
   const [profileUrl, setProfileUrl] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [previewImage, setPreviewImage] = useState(null); // 미리보기 이미지 상태
   const [loadingPreview, setLoadingPreview] = useState(false); // 미리보기 로딩 상태
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user === null) {
+      alert("로그인을 먼저 해주세요");
+      navigate("/login", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handlePreview = async () => {
     if (!profileUrl.trim()) {
@@ -60,6 +69,11 @@ function Profile() {
         alert("프로필 저장 실패: " + response.data.message);
       }
     } catch (error) {
+      if (error.response && error.response.status === 403) {
+        alert("로그인 후 사용해주세요.");
+        navigate("/login", { replace: true }); // 로그인 페이지로 이동
+      }
+
       console.error("프로필 저장 요청 중 오류 발생:", error);
       alert("프로필 저장 요청 중 오류가 발생했습니다.");
     }
