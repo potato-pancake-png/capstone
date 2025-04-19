@@ -20,9 +20,12 @@ function CreatePost() {
   const fetchPosts = async () => {
     try {
       setLoading(true); // 로딩 상태 활성화
-      const response = await axios.post("/api/posts", { action: "getPosts" }); // Axios로 POST 요청
+      const response = await axios.post("/api/posts/fetchposts", {
+        action: "getPosts",
+      }); // Axios로 POST 요청
       setPosts(response.data.posts); // 게시글 목록 설정
     } catch (err) {
+      console.log(err);
       setError(err.message); // 에러 상태 설정
     } finally {
       setLoading(false); // 로딩 상태 비활성화
@@ -61,7 +64,7 @@ function CreatePost() {
     }
 
     try {
-      const response = await axios.post("/api/posts/create", {
+      const response = await axios.post("/api/posts", {
         username: user,
         title,
         content,

@@ -6,19 +6,11 @@ import axios from "axios"; // Axios 추가
 import { AuthContext } from "../AuthContext";
 
 function Profile() {
-  const { user } = useContext(AuthContext);
   const [profileUrl, setProfileUrl] = useState("");
   const [birthYear, setBirthYear] = useState("");
   const [previewImage, setPreviewImage] = useState(null); // 미리보기 이미지 상태
-  const [loadingPreview, setLoadingPreview] = useState(false); // 미리보기 로딩 상태
+  const [loadingPreview, setLoadingPreview] = useState(false); // 미리보기 로딩 상태\
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user === null) {
-      alert("로그인을 먼저 해주세요");
-      navigate("/login", { replace: true });
-    }
-  }, [user, navigate]);
 
   const handlePreview = async () => {
     if (!profileUrl.trim()) {

@@ -6,7 +6,6 @@ const cors = require("cors");
 const path = require("path");
 const MySQLStore = require("express-mysql-session")(session);
 const connectToDatabase = require("./config/database");
-const checkSession = require("./middleware/checkSession");
 const requestLogger = require("./middleware/requestLogger");
 const errorRouter = require("./routes/error");
 const postsRouter = require("./routes/posts");
