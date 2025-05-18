@@ -36,13 +36,12 @@ async function signupUser(username, password, email) {
   try {
     const hashedPassword = generateMD5Hash(password); // 비밀번호를 MD5 해시로 변환
 
-    // 모델 호출: 사용자 추가
     const results = await insertUser(username, hashedPassword, email);
 
-    return results; // 성공 시 결과 반환
+    return results;
   } catch (error) {
     console.error("signupUser 중 오류 발생:", error.message);
-    throw error; // 에러를 호출한 곳으로 전달
+    throw error;
   }
 }
 

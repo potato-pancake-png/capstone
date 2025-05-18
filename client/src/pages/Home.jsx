@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useMemo } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../AuthContext"; // AuthContext 가져오기
 import PostList from "../components/PostList"; // PostList 가져오기
 import Nav from "../components/Nav"; // Nav 가져오기
@@ -8,53 +8,53 @@ import axios from "axios"; // Axios 추가
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
 function CreatePost() {
-  const { user } = useContext(AuthContext); // AuthContext에서 사용자 정보 가져오기
-  const [posts, setPosts] = useState([]); // 게시글 목록 상태
-  const [searchQuery, setSearchQuery] = useState(""); // 검색어 상태
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const [error, setError] = useState(null); // 에러 상태
-  const navigate = useNavigate(); // 페이지 이동을 위한 훅
-  axios.defaults.headers.common["Content-Type"] = "application/json";
+  const { user } = useContext(AuthContext);
+  const [posts, setPosts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // 전체 게시글 가져오기
   const fetchPosts = async () => {
     try {
-      setLoading(true); // 로딩 상태 활성화
+      setLoading(true);
       const response = await axios.post("/api/posts/fetchposts", {
         action: "getPosts",
-      }); // Axios로 POST 요청
-      setPosts(response.data.posts); // 게시글 목록 설정
+      });
+      setPosts(response.data.posts);
     } catch (err) {
-      console.log(err);
-      setError(err.message); // 에러 상태 설정
+      setError(err.message);
     } finally {
-      setLoading(false); // 로딩 상태 비활성화
+      setLoading(false);
     }
   };
 
   // 검색어 기반 게시글 가져오기
   const fetchPostsBySearch = async (query) => {
     try {
-      setLoading(true); // 로딩 상태 활성화
-      const response = await axios.get(
-        `/api/posts?search=${encodeURIComponent(query)}`
-      ); // Axios로 GET 요청
-      setPosts(response.data.posts); // 검색 결과로 게시글 목록 설정
+      setLoading(true);
+      const response = await axios.get(`/api/posts?search=${query}`);
+      setPosts(response.data.posts); // posts 받아오면 바로 상태 업데이트
+      setError(null); // 에러 초기화
     } catch (err) {
-      if (err.response && err.response.status === 404) {
-        setError("게시글이 없습니다"); // 404 에러 처리
+      if (
+        err.response &&
+        (err.response.status === 404 || err.response.status === 500)
+      ) {
+        setPosts([]); // 검색 결과 없으면 posts를 빈 배열로
+        setError("게시글이 없습니다");
       } else {
-        setError(err.message); // 그 외 에러 처리
+        setError(err.message);
       }
     } finally {
-      setLoading(false); // 로딩 상태 비활성화
+      setLoading(false);
     }
   };
 
   // 게시글 작성
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const title = e.target.title.value;
     const content = e.target.content.value;
 
@@ -68,30 +68,28 @@ function CreatePost() {
         username: user,
         title,
         content,
-      }); // Axios로 POST 요청
+      });
 
-      setPosts((prevPosts) => [...prevPosts, response.data]); // 새 게시글 추가
+      setPosts((prevPosts) => [...prevPosts, response.data]);
       alert("게시글이 성공적으로 작성되었습니다.");
-      e.target.reset(); // 입력 필드 초기화
+      e.target.reset();
     } catch (error) {
-      if (error.response.status === 403) {
+      if (error.response && error.response.status === 403) {
         alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
-        navigate("/login"); // 로그인 페이지로 리다이렉트
+        navigate("/login");
         return;
       }
-      console.error("게시글 작성 중 오류 발생:", error);
-      alert("게시글 작성 중 오류가 발생했습니다.");
+      setError("게시글 작성 중 오류가 발생했습니다.");
     }
   };
 
   // 검색 핸들러
   const handleSearch = (e) => {
     e.preventDefault();
-
     if (searchQuery.trim() === "") {
-      fetchPosts(); // 검색어가 없으면 전체 게시글 가져오기
+      fetchPosts();
     } else {
-      fetchPostsBySearch(searchQuery); // 검색어 기반 게시글 가져오기
+      fetchPostsBySearch(searchQuery);
     }
   };
 
@@ -99,13 +97,6 @@ function CreatePost() {
   useEffect(() => {
     fetchPosts();
   }, []);
-
-  // PostList를 메모이제이션하여 불필요한 리렌더링 방지
-  const memoizedPostList = useMemo(() => {
-    if (loading) return <p>로딩 중...</p>;
-    if (error) return <p>에러: {error}</p>;
-    return <PostList posts={posts} />;
-  }, [posts, loading, error]);
 
   return (
     <div>
@@ -129,7 +120,15 @@ function CreatePost() {
 
         {/* 게시글 목록 */}
         <section className="section">
-          <div>{memoizedPostList}</div>
+          <div>
+            {loading ? (
+              <p>로딩 중...</p>
+            ) : error ? (
+              <p>{error}</p>
+            ) : (
+              <PostList posts={posts} />
+            )}
+          </div>
         </section>
 
         {/* 게시글 작성 */}

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 import Navbar from "../components/Nav";
 import axios from "axios"; // Axios 추가
-import { AuthContext } from "../AuthContext";
 
 function Profile() {
   const [profileUrl, setProfileUrl] = useState("");

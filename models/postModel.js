@@ -12,7 +12,7 @@ async function getPostById(id) {
 // 키워드로 게시글 검색
 async function getPostsByKeyword(keyword) {
   const pool = await connectToDatabase();
-  const query = `SELECT id, username, title, content FROM articles WHERE title LIKE ${keyword}`;
+  const query = `SELECT id, username, title, content FROM articles WHERE title LIKE \'%${keyword}%\'`;
   const [results] = await pool.query(query);
   return results;
 }
