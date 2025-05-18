@@ -11,6 +11,7 @@ const errorRouter = require("./routes/error");
 const postsRouter = require("./routes/posts");
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
+const helmet = require("helmet");
 
 dotenv.config();
 
@@ -24,6 +25,11 @@ const corsOptions = {
 
 // 미들웨어 설정
 app.use(cors(corsOptions));
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+  })
+);
 app.use(bodyParser.json()); // JSON 요청 본문 파싱
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger); // 요청 로깅 미들웨어(서버에 클라이언트 요청 정보 기록)
